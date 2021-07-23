@@ -78,6 +78,7 @@ JdbcRowSetImpl无法成功可以一试
 bcel
 
 可用于解决不出网利用。
+需要注意在Java 8u251以后，bcel类被删除。
 
 tomcat7
 
