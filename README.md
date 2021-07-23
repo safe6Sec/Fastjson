@@ -36,7 +36,8 @@ Set[{"@type":"java.net.URL","val":"http://dnslog"}
 
 
 
-JDK版本对于JDNI注入的限制，基于RMI利用的JDK版本<=6u141、7u131、8u121，基于LDAP利用的JDK版本<=6u211、7u201、8u191。（更高版本也有绕过）
+JDK版本对于JDNI注入的限制，基于RMI利用的JDK版本<=6u141、7u131、8u121，基于LDAP利用的JDK版本<=6u211、7u201、8u191。（更高版本也有绕过）  
+更高版本绕过可用https://github.com/veracode-research/rogue-jndi
 
 
 
