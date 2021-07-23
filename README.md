@@ -42,10 +42,11 @@ JDK版本对于JDNI注入的限制，基于RMI利用的JDK版本<=6u141、7u131�
 
 1. jndi
    1. JdbcRowSetImpl
-   2. C3p0.JndiRefForwardingDataSource
+   2. C3p0#JndiRefForwardingDataSource
    3. JndiDataSourceFactory
 2. bcel
-   1. tomcat.dbcp
+   1. tomcat#dbcp
+   2. ibatis
 3. TemplatesImpl
 
 ----
@@ -266,7 +267,7 @@ TemplatesImpl
 
 
 
-c3p0.WrapperConnectionPoolDataSource
+c3p0#WrapperConnectionPoolDataSource
 
 可用于解决不出网利用。
 
