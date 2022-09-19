@@ -1359,7 +1359,13 @@ Mysqlconnector 6.x or < 8.0.20
 ```
 
 
+### fastjson < 1.2.83
 
+- 具体版本1.2.76 <= fastjson < 1.2.83
+- 依赖groovy
+
+具体参考
+https://github.com/Lonely-night/fastjsonVul
 
 
 
