@@ -306,20 +306,7 @@ https://github.com/pen4uin/awesome-java-security/tree/main/alibaba%20fastjson
 }
 ```
 
-绕过 WAF ，在部分中间件中，multipart 支持指定 Content-Transformer-Encoding
-可以使用 Base64 或 quoted-printable （QP 编码） 来绕过 WAF
 
-
-
-大量字符绕过 WAF
-```json
-[11111111111111111111111111111111111,[11111111111111111111111111111111111... ,[11111111111111111111111111111111111... ,[11111111111111111111111111111111111... ,[11111111111111111111111111111111111... ,...,{'\x40\u0074\x79\u0070\x65':xjava.lang.AutoCloseable"... ]]]]]
-```
-
-各种特性
-```json
-,new:[NaN,x'00',{,/*}*/'\x40\u0074\x79\u0070\x65':xjava.lang.AutoClosea ble"
-```
 
 文件写，结合 commons-io 代码（stream 里面写 68 的 payload）
 
@@ -1371,6 +1358,22 @@ https://github.com/Lonely-night/fastjsonVul
 
 
 ## bypasswaf
+
+绕过 WAF ，在部分中间件中，multipart 支持指定 Content-Transformer-Encoding
+可以使用 Base64 或 quoted-printable （QP 编码） 来绕过 WAF
+
+
+
+大量字符绕过 WAF
+```
+[11111111111111111111111111111111111,[11111111111111111111111111111111111... ,[11111111111111111111111111111111111... ,[11111111111111111111111111111111111... ,[11111111111111111111111111111111111... ,...,{'\x40\u0074\x79\u0070\x65':xjava.lang.AutoCloseable"... ]]]]]
+```
+
+各种特性
+```
+,new:[NaN,x'00',{,/*}*/'\x40\u0074\x79\u0070\x65':xjava.lang.AutoClosea ble"
+```
+
 
 文章推荐：https://www.sec-in.com/article/950   
 
