@@ -5,20 +5,13 @@ Fastjson姿势技巧集合
 ## 说明
 - 本项目涉及的一些姿势和payload是从之前的随手记的笔记直接粘进来的，很多找不到出处了所以来源未贴出来，望师傅们见谅。
 - 高版本的很多细节还有待更新。
-- 浅蓝Kcon议题内容由su18师傅整理
+- 浅蓝Kcon议题内容由@su18师傅整理
+- 各版本复现payload来自@kezibei师傅，我原项目基础上加了maven依赖，做了一点代码修改。
 
 
-## 自我提问
-新手，学完后应该能回答如下问题。
+## 各版本payload复现
+https://github.com/safe6Sec/ShiroAndFastJson
 
-1. parse 和 parseObject的区别
-2. 主要exp有哪几种
-3. 不出网怎么利用
-4. templatesimpl为什么鸡肋
-5. 高版本jdk bcel为什么失败
-6. 1.2.48通杀exp原理是什么
-7. 如何突破parse不能调用所有getters方法的限制
-8. 1.2.68绕过原理是什么
 
 
 ## 判断是否用了fastjson
