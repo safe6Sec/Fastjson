@@ -69,7 +69,60 @@ DNSLOG
 {"name":"a","age":18}
 ```
 
-## 探测
+如果目标回显详细报错信息，稍微破坏一下json结构，比如多一个{，比如简简单单把{}变成a。就可以看出来到底是不是jackson。   
+
+如果目标不回显详细报错信息，而是只有一个500或者error，那么jackson不允许存在不相关的键值，fastjson允许这个特性就可以派上用场了。    
+
+比如原json如下。
+```
+{"pageNumber":1,"pageSize":1}
+```
+加上一个不相关的键值
+```
+{"pageNumber":1,"pageSize":1,"test":1}
+```
+jackson就会报错，fastjson则不会，而是和之前一模一样。
+
+
+
+## 版本探测
+
+
+### 无报错信息探测
+
+https://mp.weixin.qq.com/s/jbkN86qq9JxkGNOhwv9nxA
+
+【不报错】1.2.83/1.2.24
+【报错】1.2.25-1.2.80
+```
+{"zero":{"@type":"java.lang.Exception","@type":"org.XxException"}}
+```
+
+【不报错】1.2.24-1.2.68
+【报错】1.2.70-1.2.83
+```
+{"zero":{"@type":"java.lang.AutoCloseable","@type":"java.io.ByteArrayOutputStream"}}
+```
+
+【不报错】1.2.24-1.2.47
+【报错】1.2.48-1.2.83
+```
+{
+    "a": {
+        "@type": "java.lang.Class", 
+        "val": "com.sun.rowset.JdbcRowSetImpl"
+    }, 
+    "b": {
+        "@type": "com.sun.rowset.JdbcRowSetImpl"
+    }
+}
+```
+
+【不报错】1.2.24
+【报错】1.2.25-1.2.83
+```
+{"zero": {"@type": "com.sun.rowset.JdbcRowSetImpl"}}
+```
 
 ### 延迟探测
 
